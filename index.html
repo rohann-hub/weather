@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        /* Weather Container */
+        .weather-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            width: 350px;
+        }
+
+        /* Heading */
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Input Field */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        input[type="text"]::placeholder {
+            color: #888;
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Result Display */
+        .result {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Error Message */
+        .error {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #ff4d4d;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="weather-container">
+    <h1>Weather App</h1>
+    <input type="text" id="city" placeholder="Enter city name">
+    <button onclick="fetchWeather()">Get Temperature</button>
+    <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
+</div>
+
+<script>
+    function fetchWeather() {
+        // Get the city name from the input field
+        const city = document.getElementById('city').value;
+        const apiKey = '54411c0b538f4b705898852630cbacd8'; // Replace with your OpenWeatherMap API key
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+        // Clear previous results and errors
+        document.getElementById('result').innerText = '';
+        document.getElementById('error').innerText = '';
+
+        // Fetch weather data from the API
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.cod === 200) { // Check if the API response is successful
+                    const temperature = data.main.temp;
+                    document.getElementById('result').innerText = `Temperature: ${temperature}°C`;
+                } else {
+                    document.getElementById('error').innerText = `Error: ${data.message}`;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching weather data:', error);
+                document.getElementById('error').innerText = 'Failed to fetch weather data. Please try again.';
+            });
+    }
+</script>
+
+</body>
+</html>
